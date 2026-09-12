@@ -1,10 +1,13 @@
 package com.zelo.service;
 
 import com.zelo.dto.CadastroUsuarioDTO;
+import com.zelo.dto.LoginDTO;
 import com.zelo.entity.Usuario;
 import com.zelo.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UsuarioService {
@@ -20,6 +23,10 @@ public class UsuarioService {
         usuario.setDataNascimento(dto.getDataNascimento());
         usuario.setTipoUsuario(dto.getTipoUsuario() != null ? dto.getTipoUsuario() : "PACIENTE");
         return usuarioRepository.save(usuario);
+    }
+
+    public Optional<Usuario> login(LoginDTO dto) {
+        return usuarioRepository.findByEmailAndSenha(dto.getEmail(), dto.getSenha());
     }
 
 
