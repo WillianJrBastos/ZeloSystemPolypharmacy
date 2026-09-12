@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalTime;
+import java.util.List;
 
 @Entity
 @Table(name = "alarme")
@@ -32,4 +33,7 @@ public class Alarme {
     @JoinColumn(name = "medicamento_id", nullable = false)
     @JsonIgnore
     private Medicamento medicamento;
+
+    @OneToMany(mappedBy = "alarme", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RegistroMedicacao> registros;
 }
