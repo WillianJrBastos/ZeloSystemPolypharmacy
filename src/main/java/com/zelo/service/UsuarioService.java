@@ -1,6 +1,8 @@
 package com.zelo.service;
 
 import com.zelo.dto.CadastroUsuarioDTO;
+import com.zelo.dto.EditarPerfilDTO;
+import com.zelo.dto.InformacoesSaudeDTO;
 import com.zelo.dto.LoginDTO;
 import com.zelo.entity.Usuario;
 import com.zelo.repository.UsuarioRepository;
@@ -36,5 +38,37 @@ public class UsuarioService {
 
     public List<Usuario> listarTodos() {
         return usuarioRepository.findAll();
+    }
+
+    public Usuario atualizar(Long id, CadastroUsuarioDTO dto) {
+        Usuario usuario = buscarPorId(id);
+        usuario.setNome(dto.getNome());
+        usuario.setEmail(dto.getEmail());
+        if(dto.getSenha() != null && !dto.getSenha().isBlank()) {
+            usuario.setSenha(dto.getSenha());
+        }
+        return usuarioRepository.save(usuario);
+    }
+
+    public Usuario editarPerfil(Long id, EditarPerfilDTO dto) {
+        Usuario usuario = buscarPorId(id);
+        usuario.setNome(dto.getNome());
+        usuario.setDataNascimento(dto.getDataNascimento());
+        usuario.setTelefone(dto.getTelefone());
+        usuario.setFotoUrl(dto.getFotoUrl());
+        return usuarioRepository.save(usuario);
+    }
+
+    public Usuario editarInformacoesSaude(Long id, InformacoesSaudeDTO dto) {
+        Usuario usuario = buscarPorId(id);
+        usuario.setTipoSanguineo(dto.getTipoSanguineo());
+        usuario.setAlergias(dto.getAlergias());
+        usuario.setCondicaoSaude(dto.getCondicaoSaude());
+        usuario.setObservacoesImportantes(dto.getObservacoesImportantes());
+        return usuarioRepository.save(usuario);
+    }
+
+    public void deletar(Long id) {
+        usuarioRepository.deleteById(id);
     }
 }
