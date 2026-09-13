@@ -2,6 +2,7 @@ package com.zelo.service;
 
 import com.zelo.dto.EventoCalendarioDTO;
 import com.zelo.entity.EventoCalendario;
+import com.zelo.entity.Medicamento;
 import com.zelo.entity.Usuario;
 import com.zelo.repository.EventoCalendarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,5 +47,20 @@ public class EventoCalendarioService {
 
     public void deletar(Long id) {
         eventoCalendarioRepository.deleteById(id);
+    }
+
+    public void criarAlertaEstoqueBaixo(Medicamento medicamento) {
+        String titulo = "Estoque Baixo: " + medicamento.getNome();
+        boolean jaExiste = eventoCalendarioRepository.existsByUsuarioIdAndTipoAndTitulo(medicamento.getUsuario().getId(), "ESTOQUE_BAIXO", titulo);
+
+        if (!jaExiste) {
+            EventoCalendario eventoCalendario = new EventoCalendario();
+            eventoCalendario.setTitulo(titulo);
+            eventoCalendario.setDescricao("Restam " + medicamento.getQuantidadeEstoque() + " unidades de " + medicamento.getNome());
+            eventoCalendario.setDataHora(LocalDateTime.now());
+            eventoCalendario.setTipo("ESTOQUE_BAIXO");
+            eventoCalendario.setUsuario(medicamento.getUsuario());
+            eventoCalendarioRepository.save(eventoCalendario);
+        }
     }
 }
