@@ -7,6 +7,9 @@ import com.zelo.repository.EventoCalendarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
 public class EventoCalendarioService {
 
@@ -31,5 +34,17 @@ public class EventoCalendarioService {
         EventoCalendario salvo = eventoCalendarioRepository.save(eventoCalendario);
         notificacaoService.notificarEvento(usuario, dto.getTitulo(), dto.getTipo(), dto.getDataHora());
         return salvo;
+    }
+
+    public List<EventoCalendario> listarPorUsuario(Long usuarioId) {
+        return eventoCalendarioRepository.findByUsuarioId(usuarioId);
+    }
+
+    public List<EventoCalendario> listarPorPeriodo(Long usuarioId, LocalDateTime inicio, LocalDateTime fim) {
+        return eventoCalendarioRepository.findByUsuarioIdAndDataHoraBetween(usuarioId, inicio, fim);
+    }
+
+    public void deletar(Long id) {
+        eventoCalendarioRepository.deleteById(id);
     }
 }
