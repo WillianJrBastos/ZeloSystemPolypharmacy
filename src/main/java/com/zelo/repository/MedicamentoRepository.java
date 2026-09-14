@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface MedicamentoRepository extends JpaRepository<Medicamento, Long> {
 
-    List<Medicamento> finfByUsuarioId(Long UsuarioId);
+    List<Medicamento> findByUsuarioId(Long UsuarioId);
 
     List<Medicamento> findByUsuarioIdAndQuantidadeEstoqueLessThanEqual(Long usuarioId, Integer limite);
 }
