@@ -72,4 +72,20 @@ public class MedicamentoService {
     public void deletar(Long id) {
         medicamentoRepository.deleteById(id);
     }
+
+    public Medicamento alterarStatus(Long id, boolean ativo) {
+        Medicamento medicamento = buscarPorId(id);
+        medicamento.setAtivo(ativo);
+        return medicamentoRepository.save(medicamento);
+    }
+
+    public Medicamento darBaixaEstoque(Long id, int quantidade) {
+        Medicamento medicamento = buscarPorId(id);
+        int quantidadeNova = medicamento.getQuantidadeEstoque() - quantidade;
+        medicamento.setQuantidadeEstoque(Math.max(quantidadeNova, 0));
+
+        Medicamento salvo = medicamentoRepository.save(medicamento);
+        verificarEstoqueBaixo(salvo);
+        return salvo;
+    }
 }
