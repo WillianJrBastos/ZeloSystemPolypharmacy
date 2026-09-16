@@ -9,6 +9,7 @@ import com.zelo.repository.AlarmeRepository;
 import com.zelo.repository.MedicamentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -55,6 +56,7 @@ public class MedicamentoService {
         return salvo;
     }
 
+    @Transactional
     public Medicamento cadastrarComAlarme(Long usuarioId, MedicamentoAlarmeDTO dto) {
         Usuario usuario = usuarioService.buscarPorId(usuarioId);
         Medicamento medicamento = new Medicamento();
