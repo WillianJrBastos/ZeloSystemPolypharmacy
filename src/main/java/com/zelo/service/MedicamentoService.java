@@ -34,7 +34,7 @@ public class MedicamentoService {
 
     private static final int LIMITE_ESTOQUE_BAIXO = 5;
 
-    public void verificarEstoqueBaixo(Medicamento medicamento) {
+    private void verificarEstoqueBaixo(Medicamento medicamento) {
         if (medicamento.getQuantidadeEstoque() <= LIMITE_ESTOQUE_BAIXO) {
             eventoCalendarioService.criarAlertaEstoqueBaixo(medicamento);
             notificacaoService.notificarEstoqueBaixo(medicamento.getUsuario(), medicamento.getNome(), medicamento.getQuantidadeEstoque());
