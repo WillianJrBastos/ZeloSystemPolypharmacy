@@ -1,13 +1,19 @@
 package com.zelo.service;
 
+import com.zelo.dto.HistoricoItemDTO;
+import com.zelo.dto.HistoricoResumoDiaDTO;
 import com.zelo.entity.Alarme;
 import com.zelo.entity.RegistroMedicacao;
 import com.zelo.repository.AlarmeRepository;
 import com.zelo.repository.RegistroMedicacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class RegistroMedicacaoService {
 
@@ -46,5 +52,29 @@ public class RegistroMedicacaoService {
 
     public List<RegistroMedicacao> listarPorUsuario(Long usuarioId) {
         return registroMedicacaoRepository.findByAlarmeMedicamentoUsuarioIdOrderByDataHoraAgendadaDesc(usuarioId);
+    }
+
+    public HistoricoResumoDiaDTO obterResumoDia(Long usuarioId, LocalDate dia) {
+        List<Alarme> alarmesAtivos = alarmeRepository.findByMedicamentoUsuarioIdAndAtivoTrue(usuarioId);
+
+        LocalDateTime inicio = dia.atStartOfDay();
+        LocalDateTime fim = dia.atTime(LocalTime.MAX);
+        List<RegistroMedicacao> registroDoDia = registroMedicacaoRepository.findByAlarmeMedicamentoUsuarioIdAndDataHoraAgendadaBetween(usuarioId, inicio, fim);
+
+        List<HistoricoItemDTO> itens = new ArrayList<>();
+        int tomados = 0;
+
+        for (Alarme alarme : alarmesAtivos) {
+            Optional<RegistroMedicacao> registroMedicacao = registroDoDia.stream().filter(r -> r.getAlarme().getId().equals(alarme.getId())).findFirst();
+
+            String status = registroMedicacao.map(RegistroMedicacao::getStatus).orElse("PENDENTE");
+            if ("TOMADO".equals(status)) tomados++;
+
+            itens.add(new HistoricoItemDTO(alarme.getMedicamento().getNome(), alarme.getMedicamento().getDosagem(), alarme.getHora(), status));
+        }
+
+        int pendentes = (int) itens.stream().filter(i -> "PENDENTE".equals(i.getStatus())).count();
+
+        return new HistoricoResumoDiaDTO(dia, tomados, pendentes, itens);
     }
 }
