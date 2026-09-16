@@ -7,6 +7,7 @@ import com.zelo.repository.RegistroMedicacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class RegistroMedicacaoService {
 
@@ -41,5 +42,9 @@ public class RegistroMedicacaoService {
         registroMedicacao.setStatus("IGNORADO");
         registroMedicacao.setAlarme(alarme);
         return registroMedicacaoRepository.save(registroMedicacao);
+    }
+
+    public List<RegistroMedicacao> listarPorUsuario(Long usuarioId) {
+        return registroMedicacaoRepository.findByAlarmeMedicamentoUsuarioIdOrderByDataHoraAgendadaDesc(usuarioId);
     }
 }
