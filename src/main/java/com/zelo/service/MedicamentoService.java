@@ -3,6 +3,7 @@ package com.zelo.service;
 import com.zelo.dto.MedicamentoDTO;
 import com.zelo.entity.Medicamento;
 import com.zelo.entity.Usuario;
+import com.zelo.repository.AlarmeRepository;
 import com.zelo.repository.MedicamentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,9 @@ public class MedicamentoService {
 
     @Autowired
     private NotificacaoService notificacaoService;
+
+    @Autowired
+    private AlarmeRepository alarmeRepository;
 
     private static final int LIMITE_ESTOQUE_BAIXO = 5;
 
@@ -47,6 +51,8 @@ public class MedicamentoService {
         verificarEstoqueBaixo(salvo);
         return salvo;
     }
+
+    public Medicamento cadastrarComAlarme(Long usuarioId, )
 
     public List<Medicamento> listarPorUsuario(Long usuarioId) {
         return medicamentoRepository.findByUsuarioId(usuarioId);
