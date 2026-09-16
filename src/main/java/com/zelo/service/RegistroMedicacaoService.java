@@ -1,5 +1,6 @@
 package com.zelo.service;
 
+import com.zelo.dto.HistoricoDiaResumoDTO;
 import com.zelo.dto.HistoricoItemDTO;
 import com.zelo.dto.HistoricoResumoDiaDTO;
 import com.zelo.entity.Alarme;
@@ -76,5 +77,18 @@ public class RegistroMedicacaoService {
         int pendentes = (int) itens.stream().filter(i -> "PENDENTE".equals(i.getStatus())).count();
 
         return new HistoricoResumoDiaDTO(dia, tomados, pendentes, itens);
+    }
+
+    public List<HistoricoDiaResumoDTO> obterResumoPeriodo(Long usuarioId, LocalDate inicio, LocalDate fim) {
+        List<HistoricoDiaResumoDTO> resultado = new ArrayList<>();
+        LocalDate atual = inicio;
+
+        while (!atual.isAfter(fim)) {
+            HistoricoResumoDiaDTO resumoDia = obterResumoDia(usuarioId, atual);
+            resultado.add(new HistoricoDiaResumoDTO(atual, resumoDia.getTomados(), resumoDia.getPendentes()));
+            atual = atual.plusDays(1);
+        }
+
+        return resultado;
     }
 }
