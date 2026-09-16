@@ -7,7 +7,10 @@ import com.zelo.repository.AlarmeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AlarmeService {
@@ -48,7 +51,7 @@ public class AlarmeService {
         Alarme alarme = buscarPorId(id);
         alarme.setHora(dto.getHora());
         if (dto.getAdiarMinutos() != null) {
-            alarme.setAdiarMinutos((dto.getAdiarMinutos()));
+            alarme.setAdiarMinutos(dto.getAdiarMinutos());
         }
         return alarmeRepository.save(alarme);
     }
@@ -57,5 +60,10 @@ public class AlarmeService {
         Alarme alarme = buscarPorId(id);
         alarme.setAtivo(ativo);
         return alarmeRepository.save(alarme);
+    }
+
+    public Optional<Alarme> buscarProximoAlarme(Long usuarioId) {
+        LocalTime agora = LocalTime.now();
+        return listarAtivosPorUsuario(usuarioId).stream().filter(a -> a.getHora().isAfter(agora)).min(Comparator.comparing(Alarme::getHora));
     }
 }
