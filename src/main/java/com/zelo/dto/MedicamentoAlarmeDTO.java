@@ -16,5 +16,5 @@ public class MedicamentoAlarmeDTO {
     private String formato;
     private String viaAdministracao;
     private LocalTime horario;
-    private Integer quantidadeEStoque;
+    private Integer quantidadeEstoque;
 }

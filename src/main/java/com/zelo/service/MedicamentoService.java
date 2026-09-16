@@ -1,6 +1,8 @@
 package com.zelo.service;
 
+import com.zelo.dto.MedicamentoAlarmeDTO;
 import com.zelo.dto.MedicamentoDTO;
+import com.zelo.entity.Alarme;
 import com.zelo.entity.Medicamento;
 import com.zelo.entity.Usuario;
 import com.zelo.repository.AlarmeRepository;
@@ -8,6 +10,7 @@ import com.zelo.repository.MedicamentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -52,7 +55,30 @@ public class MedicamentoService {
         return salvo;
     }
 
-    public Medicamento cadastrarComAlarme(Long usuarioId, )
+    public Medicamento cadastrarComAlarme(Long usuarioId, MedicamentoAlarmeDTO dto) {
+        Usuario usuario = usuarioService.buscarPorId(usuarioId);
+        Medicamento medicamento = new Medicamento();
+        medicamento.setNome(dto.getNome());
+        medicamento.setDosagem(dto.getDosagem());
+        medicamento.setFormato(dto.getFormato());
+        medicamento.setViaAdministracao(dto.getViaAdministracao());
+        medicamento.setQuantidadeEstoque(dto.getQuantidadeEstoque());
+        medicamento.setAtivo(true);
+        medicamento.setUsuario(usuario);
+        Medicamento salvo = medicamentoRepository.save(medicamento);
+
+        Alarme alarme = new Alarme();
+        alarme.setHora(dto.getHorario());
+        alarme.setAtivo(true);
+        alarme.setAdiarMinutos(10);
+        alarme.setMedicamento(salvo);
+        alarmeRepository.save(alarme);
+
+        LocalDateTime dataHoraNotificacao = LocalDateTime.now().withHour(dto.getHorario().getHour()).withMinute(dto.getHorario().getMinute()).withSecond(0);
+        notificacaoService.notificarHoraMedicacao(usuario, medicamento.getNome(), dataHoraNotificacao);
+        verificarEstoqueBaixo(salvo);
+        return salvo;
+    }
 
     public List<Medicamento> listarPorUsuario(Long usuarioId) {
         return medicamentoRepository.findByUsuarioId(usuarioId);
