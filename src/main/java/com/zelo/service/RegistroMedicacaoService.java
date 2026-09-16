@@ -33,5 +33,13 @@ public class RegistroMedicacaoService {
         return registroMedicacaoRepository.save(registroMedicacao);
     }
 
-
+    public RegistroMedicacao ignorar(Long alarmeId, LocalDateTime dataHoraAgendada) {
+        Alarme alarme = alarmeService.buscarPorId(alarmeId);
+        RegistroMedicacao registroMedicacao = new RegistroMedicacao();
+        registroMedicacao.setDataHoraAgendada(dataHoraAgendada);
+        registroMedicacao.setDataHoraAcao(LocalDateTime.now());
+        registroMedicacao.setStatus("IGNORADO");
+        registroMedicacao.setAlarme(alarme);
+        return registroMedicacaoRepository.save(registroMedicacao);
+    }
 }
