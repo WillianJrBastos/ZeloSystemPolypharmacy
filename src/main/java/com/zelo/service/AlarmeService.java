@@ -52,4 +52,10 @@ public class AlarmeService {
         }
         return alarmeRepository.save(alarme);
     }
+
+    public Alarme alterarStatus(Long id, boolean ativo) {
+        Alarme alarme = buscarPorId(id);
+        alarme.setAtivo(ativo);
+        return alarmeRepository.save(alarme);
+    }
 }
